@@ -122,6 +122,9 @@ def main_ui():
         st.session_state["lite_path"] = lite_path
         st.session_state["full_path"] = full_path
         st.session_state.setdefault("messages", load_lite_history(lite_path))
+        # Seed initial user message with Customer ID to avoid the agent asking for it
+        if not st.session_state["messages"]:
+            st.session_state["messages"].append(("user", f"Customer ID: {customer_id}"))
         st.session_state["initialized"] = True
         st.rerun()
 
@@ -153,9 +156,14 @@ def main_ui():
 
         user_q = st.chat_input("Escribe tu consulta…")
         if user_q:
-            st.session_state["messages"].append(("user", user_q))
+            # Show user's message immediately
+            with st.chat_message("user"):
+                st.markdown(user_q)
+
+            # Prepare state including the new user message
+            runtime_messages = list(st.session_state["messages"]) + [("user", user_q)]
             state_in: Dict[str, Any] = {
-                "messages": list(st.session_state["messages"]),
+                "messages": runtime_messages,
                 "meta": {
                     "customer_id": customer_id,
                     "lite_history_path": st.session_state["lite_path"],
@@ -165,20 +173,25 @@ def main_ui():
                 },
             }
 
-            final_state = backend["agent_app"].invoke(state_in)
+            # Show a waiting indicator for the assistant response
+            with st.chat_message("assistant"):
+                with st.spinner("Esperando respuesta del agente…"):
+                    final_state = backend["agent_app"].invoke(state_in)
 
-            # Extract assistant final response
-            assistant_text = None
-            for m in reversed(final_state.get("messages", [])):
-                # The message objects have .type and .content attributes in langgraph
-                role_m = getattr(m, "type", None) or getattr(m, "role", "")
-                if str(role_m).lower() in ("assistant", "ai"):
-                    content = getattr(m, "content", "")
-                    assistant_text = content if isinstance(content, str) else str(content)
-                    break
-            if not assistant_text:
-                assistant_text = "(Sin respuesta)"
+                # Extract assistant final response
+                assistant_text = None
+                for m in reversed(final_state.get("messages", [])):
+                    role_m = getattr(m, "type", None) or getattr(m, "role", "")
+                    if str(role_m).lower() in ("assistant", "ai"):
+                        content = getattr(m, "content", "")
+                        assistant_text = content if isinstance(content, str) else str(content)
+                        break
+                if not assistant_text:
+                    assistant_text = "(Sin respuesta)"
+                st.markdown(assistant_text)
 
+            # Persist both sides and WHY, then re-render
+            st.session_state["messages"].append(("user", user_q))
             st.session_state["messages"].append(("assistant", assistant_text))
             st.session_state["last_why"] = final_state.get("meta", {}).get("last_why", "")
             st.rerun()
