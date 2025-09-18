@@ -65,6 +65,16 @@ def load_lite_history(path: str) -> List[Tuple[str, str]]:
     return pairs
 
 
+def summarize_history(pairs: List[Tuple[str, str]]) -> str:
+    if not pairs:
+        return ""
+    # Find last user and assistant utterances
+    last_user = next((t for r, t in reversed(pairs) if r == "user"), "")
+    last_assistant = next((t for r, t in reversed(pairs) if r == "assistant"), "")
+    turns = max(1, len([1 for r, _ in pairs if r == "user"]))
+    return f"En nuestra plática anterior tuvimos {turns} consulta(s). Me pediste: '{last_user}' y te di: '{last_assistant}'."
+
+
 def render_sidebar(backend: Dict[str, Any], role: str, client_tier: str | None):
     st.sidebar.header("Herramientas disponibles")
 
@@ -121,10 +131,15 @@ def main_ui():
         lite_path, full_path = compute_history_paths(role, customer_id)
         st.session_state["lite_path"] = lite_path
         st.session_state["full_path"] = full_path
-        st.session_state.setdefault("messages", load_lite_history(lite_path))
-        # Seed initial user message with Customer ID to avoid the agent asking for it
-        if not st.session_state["messages"]:
-            st.session_state["messages"].append(("user", f"Customer ID: {customer_id}"))
+        history_pairs = load_lite_history(lite_path)
+        st.session_state.setdefault("messages", [])
+        if history_pairs:
+            # Show a succinct assistant summary instead of long past history
+            summary = summarize_history(history_pairs)
+            st.session_state["messages"] = [("assistant", summary)]
+        else:
+            # Seed initial user message with Customer ID to avoid the agent asking for it
+            st.session_state["messages"] = [("user", f"Customer ID: {customer_id}")]
         st.session_state["initialized"] = True
         st.rerun()
 
@@ -150,16 +165,14 @@ def main_ui():
 
     with col_chat:
         st.subheader("Chat")
-        for role_msg, text in st.session_state.get("messages", []):
-            with st.chat_message("user" if role_msg == "user" else "assistant"):
-                st.markdown(text)
+        chat_area = st.container()
+        with chat_area:
+            for role_msg, text in st.session_state.get("messages", []):
+                with st.chat_message("user" if role_msg == "user" else "assistant"):
+                    st.markdown(text)
 
         user_q = st.chat_input("Escribe tu consulta…")
         if user_q:
-            # Show user's message immediately
-            with st.chat_message("user"):
-                st.markdown(user_q)
-
             # Prepare state including the new user message
             runtime_messages = list(st.session_state["messages"]) + [("user", user_q)]
             state_in: Dict[str, Any] = {
@@ -173,10 +186,13 @@ def main_ui():
                 },
             }
 
-            # Show a waiting indicator for the assistant response
-            with st.chat_message("assistant"):
-                with st.spinner("Esperando respuesta del agente…"):
-                    final_state = backend["agent_app"].invoke(state_in)
+            # Show user's message and waiting indicator in the chat area (above input)
+            with chat_area:
+                with st.chat_message("user"):
+                    st.markdown(user_q)
+                with st.chat_message("assistant"):
+                    with st.spinner("Esperando respuesta del agente…"):
+                        final_state = backend["agent_app"].invoke(state_in)
 
                 # Extract assistant final response
                 assistant_text = None
@@ -197,7 +213,7 @@ def main_ui():
             st.rerun()
 
     with col_why:
-        st.subheader("Why")
+        st.subheader("Herramientas ejecutadas")
         why_text = st.session_state.get("last_why", "")
         st.text_area("Razonamiento de herramientas", value=why_text, height=200, label_visibility="collapsed")
 

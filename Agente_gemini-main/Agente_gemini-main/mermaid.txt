@@ -1,0 +1,25 @@
+flowchart TD
+  A[Inicio Chat] --> B[Modelo Our Agent]
+  B -->|tool_calls?| C{¿Solicita herramientas?}
+  C -- Sí --> D[ToolNode (gating por rol/tier)]
+  D --> E[Herramientas básicas]
+  D --> F[Herramientas premium cliente]
+  D --> G[Herramientas ejecutivo]
+  E --> H[Logs de herramientas y WHY]
+  F --> H
+  G --> H
+  H --> B
+  C -- No --> I[END]
+
+  subgraph LangGraph
+    B[our_agent]
+    D[tools]
+  end
+
+  subgraph Historiales
+    J[historial_<id>.txt\nhistorial_<id>_completo.txt]
+    K[historial_ex_<id>.txt\nhistorial_ex_<id>_completo.txt]
+  end
+
+  H --> J
+  H --> K

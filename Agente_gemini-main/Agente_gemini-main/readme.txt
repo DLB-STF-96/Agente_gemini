@@ -72,3 +72,19 @@ Agente Open Banking - Visión General para CTO
  - El gating por rol/tier es a nivel de binding de herramientas por invocación.
  - Este proyecto no ejecuta transacciones reales ni accede a datos sensibles fuera de los datasets incluidos.
 
+10) Preguntas sugeridas
+ - Cliente (normal):
+   * "Dame un resumen de mis transacciones recientes para CUST001."
+   * "¿Cuál es mi riesgo de churn para CUST001 y por qué?"
+   * "Pronostica mi gasto para los próximos 3 meses en CUST001."
+ - Cliente (premium):
+   * "Planea mi estrategia de inversión a 5 años para CUST003 con enfoque conservador."
+   * "Genera propuestas de inversión comparativas para CUST005."
+   * "Crea alertas inteligentes para CUST003 basadas en mis patrones."
+   * "Si tomo una hipoteca de 2M a 20 años, ¿cómo afecta mi ahorro en CUST003?"
+ - Ejecutivo:
+   * "Identifica oportunidades de venta en mi cartera."
+   * "¿Qué clientes requieren retención proactiva?"
+   * "Haz lead scoring para 'investment' y dame el top 5."
+   * "Muéstrame el KYC de CUST002."
+
