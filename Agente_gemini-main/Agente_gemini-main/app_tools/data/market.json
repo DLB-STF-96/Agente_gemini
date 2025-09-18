@@ -1,0 +1,16 @@
+{
+  "date": "2025-09-18",
+  "macro": {
+    "interest_rate_pct": 4.25,
+    "inflation_yoy_pct": 3.1,
+    "unemployment_pct": 5.2,
+    "gdp_growth_qoq_pct": 0.6,
+    "stock_index_change_90d_pct": 4.8
+  },
+  "sectors": {
+    "housing": {"trend": "cooling", "affordability_index": 0.82},
+    "equities": {"trend": "positive", "volatility_index": 0.21},
+    "credit": {"trend": "stable", "avg_apr_pct": 17.9}
+  }
+}
+

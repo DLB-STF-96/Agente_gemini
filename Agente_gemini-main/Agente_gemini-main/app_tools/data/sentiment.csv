@@ -1,0 +1,10 @@
+customer_id,date,channel,score,text
+CUST001,2025-07-01,app,0.6,Great app experience.
+CUST001,2025-08-12,support,-0.2,Slow response from support.
+CUST001,2025-09-10,web,0.3,Checkout was okay.
+CUST002,2025-06-22,app,-0.4,App crashes sometimes.
+CUST002,2025-08-02,support,-0.1,Fees are confusing.
+CUST002,2025-09-05,web,0.2,New design is better.
+CUST003,2025-07-18,app,0.8,Love the investment features.
+CUST003,2025-08-08,support,0.5,Helpful mortgage team.
+CUST003,2025-09-09,web,0.7,Fast transfers.

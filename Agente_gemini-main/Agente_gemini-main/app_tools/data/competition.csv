@@ -1,0 +1,7 @@
+competitor,product,apr_pct,annual_fee,signup_bonus
+BankA,credit_card,16.5,50,150
+BankA,personal_loan,12.0,0,0
+BankB,credit_card,18.9,0,200
+BankB,investment,0.0,0,free_trades_12m
+FinTechX,checking,0.0,0,cashback_1pct
+FinTechX,savings,0.0,0,apr_boost

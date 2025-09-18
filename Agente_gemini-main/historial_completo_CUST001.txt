@@ -1,0 +1,14 @@
+USER: Quiero saber cual es mi tendencia de gasto para el siguiente mes, no quiero endeudarme tanto, dime como controlar mis gastos
+ASSISTANT: Necesito tu `customer_id` para poder calcular tu tendencia de gasto. Sin embargo, no tengo la capacidad de darte consejos sobre cómo controlar tus gastos o evitar el endeudamiento. Mi función es analizar tus datos financieros.
+USER: Mi customer id es CUST001
+WHY: Para responder a la solicitud del usuario, se usarán herramientas: trending_forecast.
+TOOL:trending_forecast -> {"method": "moving_average_3m", "history_tail": [300.0, 250.0, 800.0], "forecast": {"1m": 450.0, "3m": 1350.0, "6m": 2700.0}}
+ASSISTANT: Tu tendencia de gasto para el próximo mes es de 450.0.
+USER: cuentame un chiste
+ASSISTANT: Lo siento, no puedo contarte un chiste. Mi función es ayudarte con información financiera y análisis de datos.
+USER: recuerdas mi pregunta pasada?
+ASSISTANT: Sí, recuerdo tu pregunta pasada. Me preguntaste cuál era tu tendencia de gasto para el siguiente mes y cómo controlar tus gastos, y me proporcionaste tu customer ID (CUST001). Te informé tu tendencia de gasto para el próximo mes.
+USER: Necesito que me expliques mas a detalle la razon de esta tendencia
+ASSISTANT: La tendencia de gasto de 450.0 para el próximo mes se calcula utilizando un promedio simple de tus gastos de los últimos 3 meses. Es una proyección basada en tu comportamiento de gasto reciente.
+
+Mis herramientas no me permiten desglosar las razones específicas de tus gastos pasados (por ejemplo, en qué categorías gastaste más), solo proyectar el promedio general.

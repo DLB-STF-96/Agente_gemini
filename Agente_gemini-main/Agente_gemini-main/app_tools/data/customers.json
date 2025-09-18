@@ -1,0 +1,77 @@
+{
+  "customers": [
+    {
+      "customer_id": "CUST001",
+      "name": "Ana García",
+      "age": 34,
+      "credit_score": 712,
+      "monthly_income": 2800,
+      "products": ["checking", "credit_card"],
+      "transactions_last_12m": [320, 450, 120, 980, 1500, 650, 200, 400, 1200, 300, 250, 800],
+      "app_sessions_last_90d": 58,
+      "push_opens_last_90d": 22,
+      "days_since_last_login": 5,
+      "product_interactions": {
+        "credit_card": 18,
+        "personal_loan": 6,
+        "savings": 10,
+        "mortgage": 1,
+        "investment": 4
+      },
+      "churn_signals": {
+        "complaints_last_6m": 0,
+        "salary_moved_out": false,
+        "balance_trend": "stable"
+      }
+    },
+    {
+      "customer_id": "CUST002",
+      "name": "Bruno López",
+      "age": 45,
+      "credit_score": 655,
+      "monthly_income": 3800,
+      "products": ["checking", "savings", "insurance"],
+      "transactions_last_12m": [1500, 1700, 1400, 1600, 1550, 1620, 1490, 1300, 1100, 900, 700, 600],
+      "app_sessions_last_90d": 24,
+      "push_opens_last_90d": 8,
+      "days_since_last_login": 21,
+      "product_interactions": {
+        "credit_card": 5,
+        "personal_loan": 3,
+        "savings": 22,
+        "mortgage": 2,
+        "investment": 3
+      },
+      "churn_signals": {
+        "complaints_last_6m": 2,
+        "salary_moved_out": true,
+        "balance_trend": "down"
+      }
+    },
+    {
+      "customer_id": "CUST003",
+      "name": "Carla Méndez",
+      "age": 29,
+      "credit_score": 795,
+      "monthly_income": 5200,
+      "products": ["checking", "credit_card", "investment", "savings"],
+      "transactions_last_12m": [2200, 2100, 2500, 2400, 2300, 2600, 2550, 2700, 2800, 3000, 3100, 2900],
+      "app_sessions_last_90d": 96,
+      "push_opens_last_90d": 45,
+      "days_since_last_login": 1,
+      "product_interactions": {
+        "credit_card": 30,
+        "personal_loan": 2,
+        "savings": 26,
+        "mortgage": 0,
+        "investment": 35
+      },
+      "churn_signals": {
+        "complaints_last_6m": 0,
+        "salary_moved_out": false,
+        "balance_trend": "up"
+      }
+    }
+  ]
+}
+
