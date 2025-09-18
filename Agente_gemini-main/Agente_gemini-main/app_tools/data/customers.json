@@ -6,6 +6,7 @@
       "age": 34,
       "credit_score": 712,
       "monthly_income": 2800,
+      "tier": "normal",
       "products": ["checking", "credit_card"],
       "transactions_last_12m": [320, 450, 120, 980, 1500, 650, 200, 400, 1200, 300, 250, 800],
       "app_sessions_last_90d": 58,
@@ -22,6 +23,13 @@
         "complaints_last_6m": 0,
         "salary_moved_out": false,
         "balance_trend": "stable"
+      },
+      "kyc": {
+        "status": "verified",
+        "pep": false,
+        "aml_flags": [],
+        "kyc_last_update": "2025-08-15",
+        "documents": ["ID", "proof_of_address"]
       }
     },
     {
@@ -30,6 +38,7 @@
       "age": 45,
       "credit_score": 655,
       "monthly_income": 3800,
+      "tier": "normal",
       "products": ["checking", "savings", "insurance"],
       "transactions_last_12m": [1500, 1700, 1400, 1600, 1550, 1620, 1490, 1300, 1100, 900, 700, 600],
       "app_sessions_last_90d": 24,
@@ -46,6 +55,13 @@
         "complaints_last_6m": 2,
         "salary_moved_out": true,
         "balance_trend": "down"
+      },
+      "kyc": {
+        "status": "pending_update",
+        "pep": false,
+        "aml_flags": ["address_mismatch"],
+        "kyc_last_update": "2024-12-02",
+        "documents": ["ID"]
       }
     },
     {
@@ -54,6 +70,7 @@
       "age": 29,
       "credit_score": 795,
       "monthly_income": 5200,
+      "tier": "premium",
       "products": ["checking", "credit_card", "investment", "savings"],
       "transactions_last_12m": [2200, 2100, 2500, 2400, 2300, 2600, 2550, 2700, 2800, 3000, 3100, 2900],
       "app_sessions_last_90d": 96,
@@ -70,6 +87,109 @@
         "complaints_last_6m": 0,
         "salary_moved_out": false,
         "balance_trend": "up"
+      },
+      "kyc": {
+        "status": "verified",
+        "pep": false,
+        "aml_flags": [],
+        "kyc_last_update": "2025-09-01",
+        "documents": ["ID", "proof_of_address", "income_statement"]
+      }
+    },
+    {
+      "customer_id": "CUST004",
+      "name": "Diego Ramos",
+      "age": 52,
+      "credit_score": 602,
+      "monthly_income": 2400,
+      "tier": "normal",
+      "products": ["checking", "savings"],
+      "transactions_last_12m": [800, 750, 600, 700, 650, 720, 680, 640, 620, 610, 590, 580],
+      "app_sessions_last_90d": 12,
+      "push_opens_last_90d": 3,
+      "days_since_last_login": 34,
+      "product_interactions": {
+        "credit_card": 2,
+        "personal_loan": 1,
+        "savings": 12,
+        "mortgage": 0,
+        "investment": 1
+      },
+      "churn_signals": {
+        "complaints_last_6m": 1,
+        "salary_moved_out": false,
+        "balance_trend": "down"
+      },
+      "kyc": {
+        "status": "verified",
+        "pep": false,
+        "aml_flags": [],
+        "kyc_last_update": "2025-06-20",
+        "documents": ["ID", "proof_of_address"]
+      }
+    },
+    {
+      "customer_id": "CUST005",
+      "name": "Elena Soto",
+      "age": 38,
+      "credit_score": 745,
+      "monthly_income": 6800,
+      "tier": "premium",
+      "products": ["checking", "investment", "insurance", "savings"],
+      "transactions_last_12m": [3000, 3200, 3500, 3400, 3600, 3700, 3800, 4000, 3900, 4100, 4200, 4300],
+      "app_sessions_last_90d": 110,
+      "push_opens_last_90d": 50,
+      "days_since_last_login": 2,
+      "product_interactions": {
+        "credit_card": 8,
+        "personal_loan": 1,
+        "savings": 20,
+        "mortgage": 0,
+        "investment": 40
+      },
+      "churn_signals": {
+        "complaints_last_6m": 0,
+        "salary_moved_out": false,
+        "balance_trend": "up"
+      },
+      "kyc": {
+        "status": "enhanced_due_diligence",
+        "pep": false,
+        "aml_flags": ["high_inflow_variance"],
+        "kyc_last_update": "2025-08-28",
+        "documents": ["ID", "proof_of_address", "source_of_funds"]
+      }
+    },
+    {
+      "customer_id": "CUST006",
+      "name": "Fernando Cruz",
+      "age": 41,
+      "credit_score": 680,
+      "monthly_income": 4100,
+      "tier": "normal",
+      "products": ["checking", "credit_card", "personal_loan"],
+      "transactions_last_12m": [1400, 1350, 1500, 1600, 1450, 1480, 1520, 1490, 1550, 1580, 1620, 1400],
+      "app_sessions_last_90d": 40,
+      "push_opens_last_90d": 12,
+      "days_since_last_login": 10,
+      "product_interactions": {
+        "credit_card": 16,
+        "personal_loan": 8,
+        "savings": 6,
+        "mortgage": 1,
+        "investment": 3
+      },
+      "churn_signals": {
+        "complaints_last_6m": 1,
+        "salary_moved_out": false,
+        "balance_trend": "stable"
+      },
+      "kyc": {
+        "status": "verified",
+        "pep": false,
+        "aml_flags": [],
+        "kyc_last_update": "2025-05-10",
+        "documents": ["ID", "proof_of_address"]
       }
     }
   ]
