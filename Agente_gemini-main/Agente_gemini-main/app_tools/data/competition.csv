@@ -5,3 +5,5 @@ BankB,credit_card,18.9,0,200
 BankB,investment,0.0,0,free_trades_12m
 FinTechX,checking,0.0,0,cashback_1pct
 FinTechX,savings,0.0,0,apr_boost
+NeoBankY,credit_card,15.9,0,250
+NeoBankY,mortgage,7.9,0,rate_discount_0.25pct

@@ -7,7 +7,8 @@ from langchain_core.messages import BaseMessage, SystemMessage
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-from app_tools import TOOLS  # Importa tus tools desde el paquete tools
+from app_tools import TOOLS, TOOLS_BASIC, TOOLS_CLIENT_PREMIUM, TOOLS_EXECUTIVE, get_tools_for_role, tool_names  # Importa tus tools
+from app_tools.common import find_customer
 
 # Configuración de logging a consola
 logging.basicConfig(
@@ -20,9 +21,15 @@ logger = logging.getLogger("agent")
 if "GOOGLE_API_KEY" not in os.environ:
     os.environ["GOOGLE_API_KEY"] = "AIzaSyDBilAFDali0jOuoNuhVVHbR-bGomjnpyY"
 
-# Inicialización del modelo y enlace de herramientas
+# Inicialización del modelo base (enlazaremos herramientas de forma dinámica por rol)
 base_model = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
-model = base_model.bind_tools(TOOLS)
+
+
+def _allowed_tools_from_meta(meta: Dict[str, Any]):
+    role = (meta or {}).get("role")
+    tier = (meta or {}).get("client_tier")
+    tools = get_tools_for_role(role or "cliente", tier)
+    return tools
 
 
 class AgentState(TypedDict):
@@ -77,8 +84,13 @@ def model_call(state: AgentState) -> AgentState:
         )
     )
 
+    # Determinar herramientas permitidas para esta invocación
+    meta = state.get("meta", {}) if isinstance(state, dict) else {}
+    allowed_tools = _allowed_tools_from_meta(meta)
+    local_model = base_model.bind_tools(allowed_tools)
+
     # Llamada al modelo
-    response = model.invoke([system_prompt] + list(state["messages"]))
+    response = local_model.invoke([system_prompt] + list(state["messages"]))
 
     # Log del mensaje del asistente
     msg_text = _get_text(response).strip()
@@ -120,6 +132,11 @@ def model_call(state: AgentState) -> AgentState:
         names = _tool_call_names(tool_calls)
         why = f"WHY: Para responder a la solicitud del usuario, se usarán herramientas: {', '.join(names)}."
         _append(full_path, why)
+        # Guardar WHY en meta para UI
+        try:
+            meta["last_why"] = why
+        except Exception:
+            pass
 
     # Registrar respuesta del asistente
     if msg_text:
@@ -144,7 +161,8 @@ def should_continue(state: AgentState) -> str:
 
 
 # ToolNode base
-_tool_node = ToolNode(tools=TOOLS)
+def _tool_node_for(tools):
+    return ToolNode(tools=tools)
 
 def tools_with_logging(state: AgentState) -> AgentState:
     # Inspecciona la intención de herramientas desde el último mensaje del asistente
@@ -161,8 +179,10 @@ def tools_with_logging(state: AgentState) -> AgentState:
         else:
             logger.info("-> Ejecutando herramientas...")
 
-    # Ejecuta las herramientas reales
-    out = _tool_node.invoke(state)
+    # Ejecuta las herramientas reales con gating dinámico
+    meta = state.get("meta", {}) if isinstance(state, dict) else {}
+    allowed_tools = _allowed_tools_from_meta(meta)
+    out = _tool_node_for(allowed_tools).invoke(state)
 
     # Log de resultados de herramientas
     tool_msgs = out.get("messages", [])
@@ -203,14 +223,29 @@ app = graph.compile()
 
 
 if __name__ == "__main__":
+    role = input("Seleccione rol (cliente/ejecutivo): ").strip().lower()
+    if role not in ("cliente", "ejecutivo"):
+        print("Rol inválido. Use 'cliente' o 'ejecutivo'.")
+        raise SystemExit(1)
+
     customer_id = input("Ingrese Customer ID (e.g., CUST001): ").strip()
     if not customer_id:
         print("Customer ID requerido. Saliendo.")
         raise SystemExit(1)
 
+    # Detectar tier si es cliente
+    client_tier = None
+    if role == "cliente":
+        cust = find_customer(customer_id)
+        client_tier = (cust or {}).get("tier", "normal")
+
     base_dir = os.getcwd()
-    lite_history_path = os.path.join(base_dir, f"historial_{customer_id}.txt")
-    full_history_path = os.path.join(base_dir, f"historial_completo_{customer_id}.txt")
+    if role == "ejecutivo":
+        lite_history_path = os.path.join(base_dir, f"historial_ex_{customer_id}.txt")
+        full_history_path = os.path.join(base_dir, f"historial_ex_{customer_id}_completo.txt")
+    else:
+        lite_history_path = os.path.join(base_dir, f"historial_{customer_id}.txt")
+        full_history_path = os.path.join(base_dir, f"historial_{customer_id}_completo.txt")
 
     # Cargar historial previo (solo textos de usuario y asistente)
     history_pairs: List[Tuple[str, str]] = []
@@ -247,6 +282,8 @@ if __name__ == "__main__":
                 "customer_id": customer_id,
                 "lite_history_path": lite_history_path,
                 "full_history_path": full_history_path,
+                "role": role,
+                "client_tier": client_tier,
             },
         }
 

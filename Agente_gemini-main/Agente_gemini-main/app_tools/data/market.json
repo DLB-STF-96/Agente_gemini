@@ -5,12 +5,16 @@
     "inflation_yoy_pct": 3.1,
     "unemployment_pct": 5.2,
     "gdp_growth_qoq_pct": 0.6,
-    "stock_index_change_90d_pct": 4.8
+    "stock_index_change_90d_pct": 4.8,
+    "fx_usd_local_90d_pct": 1.2,
+    "commodities_basket_90d_pct": -0.8
   },
   "sectors": {
     "housing": {"trend": "cooling", "affordability_index": 0.82},
     "equities": {"trend": "positive", "volatility_index": 0.21},
-    "credit": {"trend": "stable", "avg_apr_pct": 17.9}
+    "credit": {"trend": "stable", "avg_apr_pct": 17.9},
+    "fixed_income": {"trend": "neutral", "avg_yield_pct": 6.1},
+    "crypto": {"trend": "volatile", "30d_volatility_pct": 6.5}
   }
 }
 
