@@ -68,11 +68,33 @@ def load_lite_history(path: str) -> List[Tuple[str, str]]:
 def summarize_history(pairs: List[Tuple[str, str]]) -> str:
     if not pairs:
         return ""
-    # Find last user and assistant utterances
-    last_user = next((t for r, t in reversed(pairs) if r == "user"), "")
-    last_assistant = next((t for r, t in reversed(pairs) if r == "assistant"), "")
-    turns = max(1, len([1 for r, _ in pairs if r == "user"]))
-    return f"En nuestra plática anterior tuvimos {turns} consulta(s). Me pediste: '{last_user}' y te di: '{last_assistant}'."
+    # Build a concise, professional summary using the same LLM
+    try:
+        from langchain.chat_models import init_chat_model
+
+        base = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
+        # Limit to last 20 lines to keep prompt compact
+        limited = pairs[-20:]
+        convo = "\n".join([f"{r.upper()}: {t}" for r, t in limited])
+        prompt = (
+            "Eres un asesor financiero profesional. Resume de forma breve y clara (2-4 oraciones) la conversación anterior entre el cliente y el agente. "
+            "Enfatiza: qué solicitó el usuario, qué análisis/herramientas utilizó el agente y qué conclusiones o recomendaciones se entregaron. "
+            "Evita detalles menores y redacta en español natural y profesional. Si procede, sugiere un siguiente paso en una sola oración.\n\n"
+            f"Conversación (últimos turnos):\n{convo}\n\nResumen:"
+        )
+        msg = base.invoke(prompt)
+        content = getattr(msg, "content", msg)
+        summary = content if isinstance(content, str) else str(content)
+        return summary.strip()
+    except Exception:
+        # Fallback simple summary if LLM fails
+        last_user = next((t for r, t in reversed(pairs) if r == "user"), "")
+        last_assistant = next((t for r, t in reversed(pairs) if r == "assistant"), "")
+        turns = max(1, len([1 for r, _ in pairs if r == "user"]))
+        return (
+            f"En nuestra plática anterior tuvimos {turns} consulta(s). "
+            f"Me pediste: '{last_user}' y te compartí: '{last_assistant}'."
+        )
 
 
 def render_sidebar(backend: Dict[str, Any], role: str, client_tier: str | None):
